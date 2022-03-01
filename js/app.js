@@ -3,7 +3,9 @@ const main = document.getElementById('cards');
 const error = document.getElementById("error");
 const result = document.getElementById("not-found");
 const phoneDetails = document.getElementById('details');
-
+const spinner = displayStyle => {
+    document.getElementById('spinner').style.display = displayStyle;
+}
 /* search function */
 const phoneSearch = () => {
     const search = document.getElementById("input-field")
@@ -19,6 +21,7 @@ const phoneSearch = () => {
     }
 
     else if (isNaN(searchText)) {
+        spinner('block');
         const url = `https://openapi.programming-hero.com/api/phones?search=${searchText}`;
         fetch(url)
             .then(res => res.json())
@@ -26,13 +29,14 @@ const phoneSearch = () => {
         search.value = '';
         error.innerText = "";
         result.innerText = "";
+        main.innerHTML = '';
     }
 }
 
 /* show all products */
 const displayAll = totalPhones => {
     phoneDetails.innerHTML = '';
-    main.innerHTML = '';
+
     const phones = totalPhones.slice(0, 20); // upto 20 products
 
     if (totalPhones.length == 0) {
@@ -55,11 +59,12 @@ const displayAll = totalPhones => {
             main.appendChild(div);   // add div
         }
     }
+    spinner('none');
 }
 
 /* show details */
 const detailsDisplay = (id) => {
-    /*  window.scrollto(0, 0) */
+    window.scrollTo(0, 0)
     const url = `https://openapi.programming-hero.com/api/phone/${id}`
     fetch(url)
         .then(res => res.json())
@@ -91,8 +96,8 @@ const detailsDisplay = (id) => {
     `
             phoneDetails.appendChild(div);
 
-            /* others loop */
-            var othersString = data?.data?.others;
+            /* others property loop */
+            var othersString = data.data.others;
             console.log(typeof (othersString))
             if (typeof (othersString) !== undefined) {
                 for (var property in othersString) {

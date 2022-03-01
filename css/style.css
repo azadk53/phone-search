@@ -5,3 +5,6 @@ img{
     padding: 10px 10px;
 }
 
+#spinner{
+    display: none;
+}
