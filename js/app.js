@@ -15,6 +15,7 @@ const phoneSearch = () => {
         search.value = '';
         main.innerHTML = '';
         phoneDetails.innerHTML = '';
+        result.innerText = "";
     }
 
     else if (isNaN(searchText)) {
