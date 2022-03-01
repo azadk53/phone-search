@@ -2,7 +2,7 @@
 const main = document.getElementById('cards');
 const error = document.getElementById("error");
 const result = document.getElementById("not-found");
-
+const phoneDetails = document.getElementById('details');
 
 /* search function */
 const phoneSearch = () => {
@@ -11,8 +11,9 @@ const phoneSearch = () => {
 
     /* error message */
     if (!isNaN(searchText)) {
-        error.innerText = 'Please give a correct name';
+        error.innerText = 'Please give a name';
         search.value = '';
+        main.innerHTML = '';
     }
 
     else if (isNaN(searchText)) {
@@ -28,13 +29,18 @@ const phoneSearch = () => {
 
 /* show all products */
 const displayAll = totalPhones => {
+    console.log(totalPhones.length);
     main.innerHTML = '';
     const phones = totalPhones.slice(0, 20); // upto 20 products
-    console.log(phones.length);
-    for (const phone of phones) {
-        const div = document.createElement('div')  // create div
-        div.className = 'col-lg-4 col-sm-12 mb-4';
-        div.innerHTML = `
+
+    if (totalPhones.length == 0) {
+        result.innerText = 'Result not found'
+    }
+    else {
+        for (const phone of phones) {
+            const div = document.createElement('div')  // create div
+            div.className = 'col-lg-4 col-sm-12 mb-4';
+            div.innerHTML = `
         <div class="card border border-2 rounded" style="width: 18rem;">
                 <img src="${phone.image}" class=" card-img-top" alt="...">
                 <div class="card-body">
@@ -44,20 +50,19 @@ const displayAll = totalPhones => {
                 </div>
             </div>
         `
-        main.appendChild(div);   // add div
+            main.appendChild(div);   // add div
+        }
     }
-
 
 }
 
-/* shoe details */
+/* show details */
 const detailsDisplay = (id) => {
     const url = `https://openapi.programming-hero.com/api/phone/${id}`
     fetch(url)
         .then(res => res.json())
         .then(data => {
             const details = data.data.mainFeatures;
-            const div = document.createElement("div");
 
             /* sensors loop */
             let temp = "";
@@ -70,23 +75,30 @@ const detailsDisplay = (id) => {
             for (var property in othersString) {
                 console.log(`${property}: ${othersString[property]}`);
             }
-            main.innerHTML = "";
+            /*  main.innerHTML = ""; */
+
+            const div = document.createElement('div');
+            phoneDetails.innerHTML = '';
+            div.className = 'my-4';
             div.innerHTML = `
             <div class="card border border-2 rounded mx-auto" style="width: 18rem;">
-            <img src="${data.data.image}" class="img-responsive card-img-top" alt="...">
+            <img src="${data.data.image}" class=" card-img-top" alt="...">
             <div class="card-body">   
                 <h5 class="card-title">${data.data.name}</h5>
                 <p class="card-text fw-bold">${data.data.brand}</p>
                 <p class="card-text fw-bold">${data.data.releaseDate}</p>
-                <p class="card-text"><span class="fw-bold">Storage:</span> ${details.storage}</p>
+                <p class="card-text"><span class="fw-bold">Storage: </span> ${details.storage}</p>
+                <p class="card-text"><span class="fw-bold">Display: </span> ${details.displaySize}</p>
                 <p class="card-text"><span class="fw-bold">Chipset: </span>${details.chipSet}</p>
-                <p class="card-text"><span class="fw-bold">Memory:</span> ${details.memory}</p>
-                <p class="card-text"><span class="fw-bold">Sensors:</span> ${temp}</p>
-                <p class="card-text"><span class="fw-bold">Sensors:</span> ${property}: ${othersString[property]}</p>
+                <p class="card-text"><span class="fw-bold">Memory: </span> ${details.memory}</p>
+                <p class="card-text"><span class="fw-bold">Sensors: </span> ${temp}</p>
+                
                      
             </div>
         </div>
     `
-            main.appendChild(div);
+            phoneDetails.appendChild(div);
         })
 }
+
+/* <p class="card-text"><span class="fw-bold">Sensors:</span> ${property}: ${othersString[property]}</p> */
